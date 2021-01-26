@@ -5,17 +5,17 @@ import praw, time, os, argparse, configparser
 from os.path import expanduser
 
 class RedditDisplay:
-    def __init__(self, subreddit_name, refresh_interval):
+    def __init__(self, subreddit_name, refresh_interval, config_path):
         self.subreddit = subreddit_name
         self.refresh_interval = refresh_interval
-        self.config = self.load_config()
+        self.config = self.load_config(config_path)
         self.reddit_client = praw.Reddit(
             client_id=self.config["API"]["client_id"],
             client_secret=self.config["API"]["client_secret"],
             user_agent=self.config["API"]["user_agent"])
         self.post = self.get_top_post()
 
-    def load_config(self):
+    def load_config(self, config_path):
         config = configparser.ConfigParser()
         config.read(config_path)
         try:
@@ -100,14 +100,14 @@ def get_cli_args():
 
     return args
 
-if __name__ == __name__:
+def redditmon_cli():
     args = get_cli_args()
 
     subreddit_name = args.Subreddit
     refresh_interval = args.r
     config_path = args.c
 
-    display = RedditDisplay(subreddit_name, refresh_interval)
+    display = RedditDisplay(subreddit_name, refresh_interval, config_path)
 
     while True:
         try:
@@ -117,3 +117,7 @@ if __name__ == __name__:
             print("Exiting RedditMon")
             time.sleep(.5)
             exit()
+
+
+if __name__ == __name__:
+    redditmon_cli()

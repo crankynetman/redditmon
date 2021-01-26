@@ -1,6 +1,10 @@
+import pathlib
 import setuptools
 
-with open("README.md", "r", encoding="utf-8") as fh:
+here = pathlib.Path(__file__).parent
+
+
+with open(f"{here}/README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
@@ -13,11 +17,16 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/cummings-chris/redditmon",
     packages=setuptools.find_packages(),
-    license="MIT License",
+    license="MIT",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    entry_points={
+        'console_scripts': [
+            'redditmon = redditmon:redditmon_cli',
+        ],
+    },
     python_requires='>=3.6',
 )
