@@ -2,53 +2,46 @@
 """
 
 import praw, time, os, argparse, configparser
-
-# TODO: Move all this argparse shit somewhere else.
-
-parser = argparse.ArgumentParser(description="Monitor Reddit")
-parser.add_argument(
-    'Subreddit', 
-    metavar='subreddit',
-    type=str, 
-    help='The name of the subreddit you want to view')
-
-parser.add_argument(
-    '-r', 
-    metavar='refresh',
-    type=int,
-    default=10,
-    help='The amount of time in seconds between refreshes')
-
-parser.add_argument(
-    '-c',
-    metavar='config',
-    type=str,
-    default='config.ini',
-    help='The file path to the config file')
-
-args = parser.parse_args()
-
-subreddit_name = args.Subreddit
-refresh_interval = args.r
-config_path = args.c
-
-config = configparser.ConfigParser()
-config.read(config_path)
-
-reddit = praw.Reddit(
-    client_id=config["API"]["client_id"],
-    client_secret=config["API"]["client_secret"],
-    user_agent=config["API"]["user_agent"]
-    )
+from os.path import expanduser
 
 class RedditDisplay:
     def __init__(self, subreddit_name, refresh_interval):
         self.subreddit = subreddit_name
         self.refresh_interval = refresh_interval
+        self.config = self.load_config()
+        self.reddit_client = praw.Reddit(
+            client_id=self.config["API"]["client_id"],
+            client_secret=self.config["API"]["client_secret"],
+            user_agent=self.config["API"]["user_agent"])
         self.post = self.get_top_post()
 
+    def load_config(self):
+        config = configparser.ConfigParser()
+        config.read(config_path)
+        try:
+            config["API"]["client_id"]
+        except KeyError:
+            print("Error encountered when loading config file. Please create a config file\n" +
+                "in the proper format, and store it in your home directory.\n" +
+                "\n" +
+                "The config file should looke like this and be named ~/config.ini:" +
+                "\n" +
+                "\n" +
+                "[API]" +
+                "\n" +
+                "client_id = Some_Reddit_AppID\n" +
+                "client_secret = Some_Reddit_App_Secret\n" +
+                "user_agent = redditmon/0.1 by slash64-api\n" +
+                "\n" +
+                "\n" +
+                "Alternatively, you can specify the location of your config file \n" +
+                "with the -c flag (use --help for a hint)\n")
+            exit()
+
+        return config
+
     def get_top_post(self):
-        post = list(reddit.subreddit(self.subreddit).hot(limit=1))[0]
+        post = list(self.reddit_client.subreddit(self.subreddit).hot(limit=1))[0]
         return post
 
     def print_post_title(self):
@@ -80,7 +73,47 @@ class RedditDisplay:
         print("Done Sleeping!")
 
 
+def get_cli_args():
+    user_home = expanduser("~")
+    parser = argparse.ArgumentParser(description="Monitor Reddit")
+    parser.add_argument(
+        'Subreddit', 
+        metavar='subreddit',
+        type=str, 
+        help='The name of the subreddit you want to view')
+
+    parser.add_argument(
+        '-r', 
+        metavar='refresh',
+        type=int,
+        default=10,
+        help='The amount of time in seconds between refreshes (default 10)')
+
+    parser.add_argument(
+        '-c',
+        metavar='config',
+        type=str,
+        default=f'{user_home}/redditmon.config.ini',
+        help='The file path to the config file (defaults to ~/redditmon.config.ini)')
+
+    args = parser.parse_args()
+
+    return args
+
 if __name__ == __name__:
+    args = get_cli_args()
+
+    subreddit_name = args.Subreddit
+    refresh_interval = args.r
+    config_path = args.c
+
     display = RedditDisplay(subreddit_name, refresh_interval)
+
     while True:
-        display.display_post()
+        try:
+            display.display_post()
+        except KeyboardInterrupt:
+            os.system("clear")
+            print("Exiting RedditMon")
+            time.sleep(.5)
+            exit()
