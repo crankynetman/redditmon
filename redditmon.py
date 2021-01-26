@@ -75,7 +75,7 @@ class RedditDisplay:
 
 def get_cli_args():
     user_home = expanduser("~")
-    parser = argparse.ArgumentParser(description="Monitor Reddit")
+    parser = argparse.ArgumentParser(description="A Janky CLI Tool to Monitor a Subreddit")
     parser.add_argument(
         'Subreddit', 
         metavar='subreddit',
