@@ -26,7 +26,7 @@ setuptools.setup(
     install_requires=['praw'],
     entry_points={
         'console_scripts': [
-            'redditmon = redditmon.redditmon:redditmon_cli',
+            'redditmon = redditmon:redditmon_cli',
         ],
     },
     python_requires='>=3.6',
