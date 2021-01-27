@@ -9,7 +9,7 @@ with open(f"{here}/README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="redditmon",
-    version="0.1.3",
+    version="0.1.4",
     author="Chris Cummings",
     author_email="nouser@slash64.tech",
     description="A simple package for viewing reddit posts",
