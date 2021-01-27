@@ -1,1 +1,1 @@
-from redditmon.redditmon import *
+import redditmon

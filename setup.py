@@ -9,7 +9,7 @@ with open(f"{here}/README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="redditmon",
-    version="0.1.4",
+    version="0.1.8",
     author="Chris Cummings",
     author_email="nouser@slash64.tech",
     description="A simple package for viewing reddit posts",
@@ -26,7 +26,7 @@ setuptools.setup(
     install_requires=['praw'],
     entry_points={
         'console_scripts': [
-            'redditmon = redditmon:redditmon_cli',
+            'redditmon = redditmon.redditmon:redditmon_cli',
         ],
     },
     python_requires='>=3.6',
