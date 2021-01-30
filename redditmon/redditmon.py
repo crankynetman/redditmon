@@ -2,6 +2,7 @@
 """
 
 import praw, time, os, argparse, configparser
+from sys import exit
 from os.path import expanduser
 
 class RedditDisplay:
@@ -70,7 +71,6 @@ class RedditDisplay:
 
         # Hang out a bit until the refresh interval expires
         time.sleep(self.refresh_interval)
-        print("Done Sleeping!")
 
 
 def get_cli_args():

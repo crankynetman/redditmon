@@ -3,13 +3,12 @@ import setuptools
 
 here = pathlib.Path(__file__).parent
 
-
 with open(f"{here}/README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="redditmon",
-    version="1.0.0",
+    version="1.0.1",
     author="Chris Cummings",
     author_email="nouser@slash64.tech",
     description="A simple package for viewing reddit posts",
